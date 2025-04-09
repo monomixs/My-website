@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Note App</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-content">
+            <h1>Welcome to Simple Note</h1>
+            <p>Your secure note-taking app</p>
+            <div class="spinner"></div>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <header>
+            <h1 style="text-align: center;" >Simple Note</h1>
+            <button id="settingsBtn" class="settings-btn" aria-label="Settings">
+                <i class="fas fa-cog"></i>
+            </button>
+        </header>
+
+        <main>
+            <section class="note-form-container">
+                <form id="noteForm">
+                    <input type="hidden" id="noteId">
+                    <div class="form-group">
+                        <input type="text" id="noteTitle" placeholder="Note Title" maxlength="100">
+                    </div>
+                    <div class="form-group">
+                        <div id="noteContent" class="note-content-editor" contenteditable="true" placeholder="Start typing your note..."></div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" id="cancelEditBtn" class="cancel-btn hidden">Cancel</button>
+                        <button type="button" id="saveNoteBtn" class="save-btn">Save Note</button>
+                        <button type="button" id="saveSecretNoteBtn" class="secret-btn">Save as Secret</button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="notes-container">
+                <div class="notes-header">
+                    <h2>Your Notes</h2>
+                    <button id="deleteAllBtn" class="delete-all-btn" aria-label="Delete all notes">
+                        <i class="fas fa-trash-alt"></i> Delete All
+                    </button>
+                </div>
+                <div id="notesList" class="notes-list"></div>
+                <div id="emptyState" class="empty-state hidden">
+                    <i class="fas fa-file-alt empty-icon"></i>
+                    <p>You don't have any notes yet</p>
+                    <p>Create your first note by filling out the form above</p>
+                </div>
+            </section>
+        </main>
+
+        <!-- Settings Modal -->
+        <div id="settingsModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Settings</h2>
+                    <button id="closeSettingsBtn" class="close-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="settings-group">
+                        <label for="themeToggle">Dark Mode</label>
+                        <label class="switch">
+                            <input type="checkbox" id="themeToggle">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+
+                    <div class="settings-group">
+                        <label>Font Size</label>
+                        <div class="font-size-controls">
+                            <button id="decreaseFontBtn" class="size-btn"><i class="fas fa-minus"></i></button>
+                            <span id="currentFontSize">Medium</span>
+                            <button id="increaseFontBtn" class="size-btn"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <label for="fontFamilySelect">Font Family</label>
+                        <select id="fontFamilySelect" class="font-family-select">
+                            <option value="Arial, sans-serif">Arial</option>
+                            <option value="Verdana, sans-serif">Verdana</option>
+                            <option value="Helvetica, sans-serif">Helvetica</option>
+                            <option value="'Times New Roman', serif">Times New Roman</option>
+                            <option value="Georgia, serif">Georgia</option>
+                            <option value="monospace">Monospace</option>
+                        </select>
+                    </div>
+
+                    <div class="settings-group">
+                        <label for="autosaveToggle">Auto-Save</label>
+                        <label class="switch">
+                            <input type="checkbox" id="autosaveToggle">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div id="deleteModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Confirm Delete</h2>
+                    <button id="closeDeleteModalBtn" class="close-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this note?</p>
+                    <p>This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button id="cancelDeleteBtn" class="cancel-btn">Cancel</button>
+                    <button id="confirmDeleteBtn" class="delete-btn">Delete</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete All Notes Confirmation Modal -->
+        <div id="deleteAllModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Confirm Delete All</h2>
+                    <button id="closeDeleteAllModalBtn" class="close-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete all notes?</p>
+                    <p>This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button id="cancelDeleteAllBtn" class="cancel-btn">Cancel</button>
+                    <button id="confirmDeleteAllBtn" class="delete-btn">Delete All</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PIN Modal for Secret Notes -->
+        <div id="pinModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Enter PIN</h2>
+                    <button id="closePinModalBtn" class="close-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>This is a secret note. Please enter the PIN to view it.</p>
+                    <input type="password" id="pinInput" placeholder="Enter PIN" maxlength="10">
+                </div>
+                <div class="modal-footer">
+                    <button id="cancelPinBtn" class="cancel-btn">Cancel</button>
+                    <button id="verifyPinBtn" class="save-btn">Verify</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification -->
+        <div id="notification" class="notification hidden">
+            <div class="notification-content">
+                <span id="notificationMessage"></span>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
